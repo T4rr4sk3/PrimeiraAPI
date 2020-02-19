@@ -313,30 +313,43 @@ namespace MovimentoClass
 			{
 				db.Open();
 
-				SqlCommand cm = new SqlCommand("INSERT INTO Movimento (id, idFundo, tipoOperacao, cpfCliente, valorMovimentacao, dataMovimentacao) values (@_id, @_idFundo, @_tipo, @_cpf, @_valor, @_data)", db.Con);
-
+				SqlCommand cm = new SqlCommand("SELECT * FROM Fundo where id = @_id", db.Con);
 
 				//Serie de if's para verificar se está tudo pelo menos preenchido
 				if ((IdFundo != Guid.Empty) && (IdFundo != null))
 				{
 
-					if ((Operacao.ToLower() == "aplicacao") || (Operacao.ToLower() == "resgate"))
-					{
+					cm.Parameters.AddWithValue("@_id", IdFundo);
 
-						if (CpfCliente != null)
+					SqlDataReader dr = cm.ExecuteReader();
+
+					cm.Dispose();
+
+					if (dr.HasRows)
+					{
+						
+						dr.Close();
+
+						if ((Operacao.ToLower() == "aplicacao") || (Operacao.ToLower() == "resgate"))
 						{
 
-							if (ValorMov > 0)
+							if (CpfCliente != null)
 							{
 
-								cm.Parameters.AddWithValue("@_id", Id.ToString());
-								cm.Parameters.AddWithValue("@_idFundo", IdFundo.ToString());
-								cm.Parameters.AddWithValue("@_tipo", (Operacao == "Aplicacao") ? 1 : 2);
-								cm.Parameters.AddWithValue("@_cpf", CpfCliente);
-								cm.Parameters.AddWithValue("@_valor", ValorMov);
-								cm.Parameters.AddWithValue("@_data", ConverterDateParaString(DataMov));
+								if (ValorMov > 0)
+								{
+									cm = new SqlCommand("INSERT INTO Movimento (id, idFundo, tipoOperacao, cpfCliente, valorMovimentacao, dataMovimentacao) values (@_id, @_idFundo, @_tipo, @_cpf, @_valor, @_data)",db.Con);
 
-								cm.ExecuteNonQuery();
+									cm.Parameters.AddWithValue("@_id", Id.ToString());
+									cm.Parameters.AddWithValue("@_idFundo", IdFundo.ToString());
+									cm.Parameters.AddWithValue("@_tipo", (Operacao.ToLowerInvariant() == "aplicacao") ? Convert.ToInt32(TipoOperacao.Aplicacao) : Convert.ToInt32(TipoOperacao.Resgate));
+									cm.Parameters.AddWithValue("@_cpf", CpfCliente);
+									cm.Parameters.AddWithValue("@_valor", ValorMov);
+									cm.Parameters.AddWithValue("@_data", ConverterDateParaString(DataMov));
+
+									cm.ExecuteNonQuery();
+
+								}
 							}
 						}
 					}
