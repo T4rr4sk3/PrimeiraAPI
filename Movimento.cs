@@ -24,6 +24,9 @@ namespace MovimentoClass
 
         public decimal ValorMov { get; set; }
 
+		//esse data será serializado e o Date ignorado no json para ficar no formato certo.
+		public string Data { get; set; }
+
 		public DateTime DataMov { get; set; }
 
 		//Métodos
