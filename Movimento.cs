@@ -27,6 +27,7 @@ namespace MovimentoClass
 		//esse data será serializado e o Date ignorado no json para ficar no formato certo.
 		public string Data { get; set; }
 
+		[JsonIgnore]
 		public DateTime DataMov { get; set; }
 
 		//Métodos
@@ -146,17 +147,22 @@ namespace MovimentoClass
 
 				cm.Dispose();
 
+				string str;
+
 				if (dr.HasRows)
 				{
 					while (dr.Read())
 					{
+						str = (string)dr["dataMovimentacao"];
+
 						Movimentos.Add(new Movimento
 						{
 							Id = Guid.Parse((string) dr["id"]),
 							IdFundo = Guid.Parse((string) dr["idFundo"]),
 							CpfCliente = (string) dr["cpfCliente"],
 							ValorMov = (decimal) dr["valorMovimentacao"],
-							DataMov = ConverterStringParaDate((string) dr["dataMovimentacao"]),
+							Data = str,
+							DataMov = ConverterStringParaDate(str),
 							Operacao = ((int) dr["tipoOperacao"] == 1 ? "Aplicacao":"Resgate")
 						});
 					}
@@ -197,17 +203,22 @@ namespace MovimentoClass
 
 				cm.Dispose();
 
+				string str;
+
 				if (dr.HasRows)
 				{
 					while (dr.Read())
 					{
+						str = (string) dr["dataMovimentacao"];
+
 						Movimentos.Add(new Movimento
 						{
 							Id = Guid.Parse((string)dr["id"]),
 							IdFundo = Guid.Parse((string)dr["idFundo"]),
 							CpfCliente = (string)dr["cpfCliente"],
 							ValorMov = (decimal)dr["valorMovimentacao"],
-							DataMov = ConverterStringParaDate((string)dr["dataMovimentacao"]),
+							Data = str,
+							DataMov = ConverterStringParaDate(str),
 							Operacao = "Aplicacao"
 						});
 					}
@@ -248,17 +259,22 @@ namespace MovimentoClass
 
 				cm.Dispose();
 
+				string str;
+
 				if (dr.HasRows)
 				{
 					while (dr.Read())
 					{
+						str = (string) dr["dataMovimentacao"];
+
 						Movimentos.Add(new Movimento
 						{
 							Id = Guid.Parse((string)dr["id"]),
 							IdFundo = Guid.Parse((string)dr["idFundo"]),
 							CpfCliente = (string)dr["cpfCliente"],
 							ValorMov = (decimal)dr["valorMovimentacao"],
-							DataMov = ConverterStringParaDate((string)dr["dataMovimentacao"]),
+							Data = str,
+							DataMov = ConverterStringParaDate(str),
 							Operacao = "Resgate"
 						});
 					}
@@ -348,7 +364,7 @@ namespace MovimentoClass
 									cm.Parameters.AddWithValue("@_tipo", (Operacao.ToLowerInvariant() == "aplicacao") ? Convert.ToInt32(TipoOperacao.Aplicacao) : Convert.ToInt32(TipoOperacao.Resgate));
 									cm.Parameters.AddWithValue("@_cpf", CpfCliente);
 									cm.Parameters.AddWithValue("@_valor", ValorMov);
-									cm.Parameters.AddWithValue("@_data", ConverterDateParaString(DataMov));
+									cm.Parameters.AddWithValue("@_data", Data);
 
 									cm.ExecuteNonQuery();
 
@@ -378,6 +394,7 @@ namespace MovimentoClass
 			IdFundo = Guid.Parse(idFundo);
 			CpfCliente = cpfCliente;
 			ValorMov = valor;
+			Data = data;
 			DataMov = ConverterStringParaDate(data);
 			Operacao = tipoOp;
 		}
