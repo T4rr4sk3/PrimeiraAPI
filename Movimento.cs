@@ -35,21 +35,19 @@ namespace MovimentoClass
 		//Nome auto-indicativo, converter a string do banco pra datetime
 		static DateTime ConverterStringParaDate(string str)
 		{
-			DateTime d = new DateTime();
-
-			str = str.Remove(str.Length - 5);
-			str = str.Replace("T", " ");
-
 			try
 			{
-				d = Convert.ToDateTime(str);
+				str = str.Remove(str.Length - 5);
+				str = str.Replace("T", " ");
+			
+				DateTime d = Convert.ToDateTime(str);
+
+				return d;
 			}
 			catch(FormatException e)
 			{
 				throw e;
 			}
-
-			return d;
 		}
 
 
@@ -175,6 +173,10 @@ namespace MovimentoClass
 			{
 				throw e;
 			}
+			catch (FormatException e)
+			{
+				throw e;
+			}
 			finally
 			{
 				db.Close();
@@ -231,6 +233,10 @@ namespace MovimentoClass
 			{
 				throw e;
 			}
+			catch (FormatException e)
+			{
+				throw e;
+			}
 			finally
 			{
 				db.Close();
@@ -284,6 +290,10 @@ namespace MovimentoClass
 
 			}
 			catch (SqlException e)
+			{
+				throw e;
+			}
+			catch (FormatException e)
 			{
 				throw e;
 			}
@@ -390,14 +400,20 @@ namespace MovimentoClass
 
 		public Movimento(string id, string idFundo, string cpfCliente, decimal valor, string data, string tipoOp)
 		{
-			Id = Guid.Parse(id);
-			IdFundo = Guid.Parse(idFundo);
-			CpfCliente = cpfCliente;
-			ValorMov = valor;
-			Data = data;
-			DataMov = ConverterStringParaDate(data);
-			Operacao = tipoOp;
+			try
+			{
+				Id = Guid.Parse(id);
+				IdFundo = Guid.Parse(idFundo);
+				CpfCliente = cpfCliente;
+				ValorMov = valor;
+				Data = data;
+				DataMov = ConverterStringParaDate(data);
+				Operacao = tipoOp;
+			}
+			catch (FormatException e)
+			{
+				throw e;
+			}
 		}
-
     }
 }

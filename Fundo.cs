@@ -210,6 +210,10 @@ namespace FundoClass
 			{
 				throw e;
 			}
+			catch(FormatException e)
+			{
+				throw e;
+			}
 			finally
 			{
 				db.Close();
@@ -246,6 +250,10 @@ namespace FundoClass
 				dr.DisposeAsync();
 			}
 			catch (SqlException e)
+			{
+				throw e;
+			}
+			catch (FormatException e)
 			{
 				throw e;
 			}
@@ -344,6 +352,10 @@ namespace FundoClass
 			{
 				throw e;
 			}
+			catch(FormatException e) // lançado por Recuperar(Guid Id);
+			{
+				throw e;
+			}
 			finally
 			{
 				db.Close();
@@ -421,6 +433,10 @@ namespace FundoClass
 			{
 				throw e;
 			}
+			catch(FormatException e)
+			{
+				throw e;
+			}
 			finally
 			{
 				db.Close();
@@ -443,7 +459,18 @@ namespace FundoClass
 		public Fundo (int codigo)
 		{
 			this.codigo = codigo;
-			Recuperar(codigo);
+			try
+			{
+				Recuperar(codigo);// pode lançar Sql e Format Exception
+			}
+			catch (SqlException e)
+			{
+				throw e;
+			}
+			catch (FormatException e)
+			{
+				throw e;
+			}
 		}
 	}
 }
